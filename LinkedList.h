@@ -76,11 +76,14 @@ public:
     }
 
     // Advance one step and play (wraps automatically)
-    void playNext() {
-        if (!head) { cout << "[Playlist is empty. Nothing to play.]\n"; return; }
-        if (!current) current = head;
-        current = current->next;     // from tail it wraps to head
-        current->data->play();
+    T* playNext() {
+    if (!current)
+        current = head;
+    else
+        current = current->next;
+
+    return current->data;
+        
     }
 };
 
