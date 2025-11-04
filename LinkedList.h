@@ -11,7 +11,7 @@ using namespace std;
 template <typename T>
 struct Node {
     T   data;
-    Node next;
+    Node<T>* next;
     explicit Node(T newData) : data(newData), next(nullptr) {}
 };
 
