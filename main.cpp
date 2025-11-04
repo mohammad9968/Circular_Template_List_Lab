@@ -30,7 +30,7 @@ int getIntInput(const std::string& prompt) {
 
 // === 6. Main Program Loop ===
 int main() {
-    LinkedList<Media> myPlaylist;
+    LinkedList<Media*> myPlaylist;
     int choice = 0;
 
     std::cout << "Welcome to the Playlist Manager Starter Program (Polymorphic Edition)!" << std::endl;
