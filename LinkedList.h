@@ -10,9 +10,9 @@ using namespace std;
 /* ---------- Node (templated) ---------- */
 template <typename T>
 struct Node {
-    T*   data;
-    Node* next;
-    explicit Node(T* newData) : data(newData), next(nullptr) {}
+    T   data;
+    Node next;
+    explicit Node(T newData) : data(newData), next(nullptr) {}
 };
 
 /* ---------- LinkedList (templated, singly-linked CIRCULAR) ---------- */
@@ -43,7 +43,7 @@ public:
     }
 
     // Insert at END; keep circular invariant tail->next == head
-    void insert(T* newItem) {
+    void insert(T newItem) {
         Node<T>* n = new Node<T>(newItem);
         if (!head) {
             head = tail = n;
