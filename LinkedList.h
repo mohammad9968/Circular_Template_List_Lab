@@ -76,7 +76,7 @@ public:
     }
 
     // Advance one step and play (wraps automatically)
-    T* playNext() {
+    T playNext() {
     if (!current)
         current = head;
     else
