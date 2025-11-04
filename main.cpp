@@ -77,17 +77,22 @@ int main() {
                 std::cout << "[Podcast added successfully!]" << std::endl;
                 break;
             }
-            case 3:
-                myPlaylist.displayList();
-                break;
-            case 4:
-                myPlaylist.playCurrent();
-                break;
-            case 5:
-                Media* m = myPlaylist.playNext();
-    if (m) std::cout << m->toString() << std::endl;
+           case 3:
+    myPlaylist.displayList();
     break;
+
+case 4:   // PLAY CURRENT
+    myPlaylist.playCurrent();
+    break;
+
+case 5:   // PLAY NEXT (the new one that returns data)
+{
+    Media* m = myPlaylist.playNext();
+    if (m)
+        std::cout << m->toString() << std::endl;
 }
+break;
+
 case 6:
     std::cout << "Exiting Playlist Manager..." << std::endl;
     break;
