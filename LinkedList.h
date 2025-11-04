@@ -63,7 +63,7 @@ public:
         const Node<T>* cur = head;
         int idx = 1;
         do {
-            cout << idx++ << ". " << cur->data->toString() << '\n';
+            cout << idx++ << " - " << cur->data->toString() << '\n';
             cur = cur->next;
         } while (cur != head);
         cout << "--------------\n";
