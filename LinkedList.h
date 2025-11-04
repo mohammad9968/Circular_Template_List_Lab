@@ -1,85 +1,87 @@
 //
+// Circular, Templated Linked List
 //
-//
-
 #ifndef CIRCULAR_TEMPLATED_LIST_H
 #define CIRCULAR_TEMPLATED_LIST_H
 
 #include <iostream>
 using namespace std;
 
-// =====================
-// Node (Templated)
-// =====================
+/* ---------- Node (templated) ---------- */
 template <typename T>
 struct Node {
-    T* data;
+    T*   data;
     Node* next;
-
     explicit Node(T* newData) : data(newData), next(nullptr) {}
 };
 
-// =====================
-// LinkedList (Templated, NOT circular yet)
-// =====================
+/* ---------- LinkedList (templated, singly-linked CIRCULAR) ---------- */
 template <typename T>
 class LinkedList {
 private:
-    Node<T>* head;
+    Node<T>* head;     // nullptr if empty
+    Node<T>* tail;     // when non-empty: tail->next == head
+    Node<T>* current;  // for playNext()
 
 public:
-    LinkedList() : head(nullptr) {}
+    LinkedList() : head(nullptr), tail(nullptr), current(nullptr) {}
 
     ~LinkedList() {
-        Node<T>* current = head;
-        while(current != nullptr) {
-            Node<T>* nextNode = current->next;
-            delete current->data;     // polymorphic delete
-            delete current;
-            current = nextNode;
+        if (!head) return;           // empty list
+        // Walk exactly once around the circle
+        Node<T>* cur = head->next;
+        while (cur != head) {
+            Node<T>* nxt = cur->next;
+            delete cur->data;        // requires virtual dtor on base type
+            delete cur;
+            cur = nxt;
         }
-        head = nullptr;
+        delete head->data;
+        delete head;
+        head = tail = current = nullptr;
+        cout << "\n[Playlist cleanup complete. All memory deallocated.]\n";
     }
 
-    // Insert at end (forward only for now)
+    // Insert at END; keep circular invariant tail->next == head
     void insert(T* newItem) {
-        Node<T>* newNode = new Node<T>(newItem);
-        if(head == nullptr) {
-            head = newNode;
+        Node<T>* n = new Node<T>(newItem);
+        if (!head) {
+            head = tail = n;
+            tail->next = head;       // first link closes the circle
+            current = head;
         } else {
-            Node<T>* cur = head;
-            while(cur->next != nullptr) {
-                cur = cur->next;
-            }
-            cur->next = newNode;
+            tail->next = n;          // old tail -> new node
+            tail = n;                // advance tail
+            tail->next = head;       // close circle
         }
     }
 
-    // Display contents
+    // Display items once around (stop when we return to head)
     void displayList() const {
-        if(head == nullptr) {
-            cout << "\n[Playlist is empty.]\n";
-            return;
-        }
-
+        if (!head) { cout << "\n[Playlist is empty.]\n"; return; }
         cout << "\n-- Playlist --\n";
-        Node<T>* cur = head;
+        const Node<T>* cur = head;
         int idx = 1;
-
-        while(cur != nullptr) {
-            cout << idx++ << ". " << cur->data->toString() << endl;
+        do {
+            cout << idx++ << ". " << cur->data->toString() << '\n';
             cur = cur->next;
-        }
+        } while (cur != head);
+        cout << "--------------\n";
     }
 
-    // Play the FIRST item only (this will change later)
+    // Play current (or head if unset)
     void playCurrent() const {
-        if(head != nullptr) {
-            head->data->play();
-        } else {
-            cout << "[Playlist empty]\n";
-        }
+        if (!head) { cout << "[Playlist is empty. Nothing to play.]\n"; return; }
+        (current ? current : head)->data->play();
+    }
+
+    // Advance one step and play (wraps automatically)
+    void playNext() {
+        if (!head) { cout << "[Playlist is empty. Nothing to play.]\n"; return; }
+        if (!current) current = head;
+        current = current->next;     // from tail it wraps to head
+        current->data->play();
     }
 };
 
-#endif
+#endif // CIRCULAR_TEMPLATED_LIST_H
